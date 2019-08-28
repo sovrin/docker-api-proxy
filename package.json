@@ -1,0 +1,11 @@
+{
+  "name": "docker-api-proxy",
+  "version": "1.0.0",
+  "description": "safely proxy http requests to docker fd socket via nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
