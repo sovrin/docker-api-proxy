@@ -1,5 +1,31 @@
 /**
  *
+ * @param fn
+ * @returns {function(...[*]=): *}
+ */
+const memoize = (fn) => {
+    const cache = {};
+
+    return (...args) => {
+        const constraint = JSON.stringify(args);
+
+        return cache[constraint] = cache[constraint] || fn(...args);
+    };
+};
+
+/**
+ *
+ * @type {function(...[*]=): *}
+ */
+const CHARS = memoize(() => (
+    [[48, 10], [65, 26], [97, 26]]
+        .map(([start, length]) => (Array.from({length}).map((_, i) => start + i)))
+        .flat(1)
+        .map((n) => String.fromCharCode(n))
+))();
+
+/**
+ *
  * @param a
  * @param b
  * @returns {boolean}
@@ -23,20 +49,13 @@ const starts = (a, b) => {
  * @param length
  * @returns {string}
  */
-const unique = (length = 32) => {
-    const chars = [[48, 10], [65, 26], [97, 26]]
-        .map(([start, length]) => (Array.from({length}).map((_, i) => start + i)))
-        .flat(1)
-        .map((n) => String.fromCharCode(n))
-    ;
-
-    return Array
+const unique = (length = 32) => (
+    Array
         .from({length}, () => Math.random())
-        .map(c => ~~(c * chars.length))
-        .map(c => chars[c])
+        .map(c => ~~(c * CHARS.length))
+        .map(c => CHARS[c])
         .join('')
-    ;
-};
+);
 
 /**
  *
@@ -93,4 +112,5 @@ module.exports = {
     middleware,
     info,
     error,
+    memoize,
 };

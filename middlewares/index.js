@@ -6,4 +6,5 @@
 module.exports = {
     verifier: require('./verifier'),
     forwarder: require('./forwarder'),
+    logger: require('./logger'),
 };

@@ -1,5 +1,5 @@
 const {createServer: create} = require('http');
-const {verifier, forwarder} = require('./middlewares');
+const {verifier, forwarder, logger} = require('./middlewares');
 const {middleware, info, error} = require('./utils');
 const {PORT, KEY, SOCKET_PATH} = require('./const');
 
@@ -10,7 +10,8 @@ const {PORT, KEY, SOCKET_PATH} = require('./const');
  * @returns {void|*}
  */
 const request = (req, res) => {
-    const fn = middleware(
+    const handler = middleware(
+        logger(),
         verifier(KEY),
         forwarder(SOCKET_PATH),
     );
@@ -24,7 +25,7 @@ const request = (req, res) => {
         res.end(err);
     };
 
-    return fn(req, res, error);
+    return handler(req, res, error);
 };
 
 /**

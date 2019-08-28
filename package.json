@@ -1,6 +1,6 @@
 {
   "name": "docker-api-proxy",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "safely proxy http requests to docker fd socket via nodejs",
   "main": "index.js",
   "scripts": {
