@@ -2,8 +2,9 @@ const {unique} = require('./utils');
 
 const WINDOWS_PIPE = '//./pipe/docker_engine';
 const UNIX_PIPE = '/var/run/docker.sock';
+const IP_WHITELIST = process.env.IP_WHITELIST || [];
 const PORT = process.env.PORT || 3000;
-const KEY = process.env.KEY || unique();
+const CUSTOM_ENDPOINT = process.env.CUSTOM_ENDPOINT || unique();
 const SOCKET_PATH = process.env.SOCKET_PATH || (process.platform === 'win32')
     ? WINDOWS_PIPE
     : UNIX_PIPE
@@ -18,6 +19,7 @@ module.exports = {
     UNIX_PIPE,
     WINDOWS_PIPE,
     PORT,
-    KEY,
+    CUSTOM_ENDPOINT,
     SOCKET_PATH,
+    IP_WHITELIST
 };

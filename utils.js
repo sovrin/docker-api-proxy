@@ -19,7 +19,12 @@ const memoize = (fn) => {
  */
 const CHARS = memoize(() => (
     [[48, 10], [65, 26], [97, 26]]
-        .map(([start, length]) => (Array.from({length}).map((_, i) => start + i)))
+        .map(([start, length]) => (
+            Array
+                .from({length})
+                .map((_, i) => start + i))
+            ,
+        )
         .flat(1)
         .map((n) => String.fromCharCode(n))
 ))();
@@ -30,12 +35,12 @@ const CHARS = memoize(() => (
  * @param b
  * @returns {boolean}
  */
-const starts = (a, b) => {
-    if (a === b) {
+        const starts = (a, b) => {
+        if (a === b) {
         return true;
-    }
+        }
 
-    for (let i = 0; i < b.length; i++) {
+        for (let i = 0; i < b.length; i++) {
         if (a[i] !== b[i]) {
             return false;
         }

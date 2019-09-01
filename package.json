@@ -3,9 +3,22 @@
   "version": "1.1.0",
   "description": "safely proxy http requests to docker fd socket via nodejs",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "bin": {
+    "dap": "./cli.js"
   },
-  "author": "",
-  "license": "ISC"
+  "author": {
+    "name": "Oleg Kamlowski",
+    "url": "http://www.sovrin.de",
+    "email": "kamlowski.oleg@gmail.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sovrin/docker-api-proxy"
+  },
+  "keywords": [
+    "docker",
+    "nodejs",
+    "proxy"
+  ]
 }

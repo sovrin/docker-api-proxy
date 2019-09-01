@@ -1,7 +1,7 @@
 const {createServer: create} = require('http');
-const {verifier, forwarder, logger} = require('./middlewares');
+const {verifier, forwarder, logger, auth} = require('./middlewares');
 const {middleware, info, error} = require('./utils');
-const {PORT, KEY, SOCKET_PATH} = require('./const');
+const {PORT, CUSTOM_ENDPOINT, SOCKET_PATH, IP_WHITELIST} = require('./const');
 
 /**
  *
@@ -11,8 +11,9 @@ const {PORT, KEY, SOCKET_PATH} = require('./const');
  */
 const request = (req, res) => {
     const handler = middleware(
+        auth(IP_WHITELIST),
         logger(),
-        verifier(KEY),
+        verifier(CUSTOM_ENDPOINT),
         forwarder(SOCKET_PATH),
     );
 
@@ -37,7 +38,7 @@ const listen = (err) => {
     if (err) return error(err);
 
     info(`proxy listening to ${PORT}`);
-    info(`registered endpoint: "/${KEY}"`);
+    info(`registered endpoint: "/${CUSTOM_ENDPOINT}"`);
 };
 
 /**
