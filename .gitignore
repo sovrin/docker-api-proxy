@@ -1,3 +1,5 @@
 .vscode
+.idea
 
+.endpoint.json
 package-lock.json

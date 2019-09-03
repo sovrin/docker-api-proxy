@@ -4,7 +4,7 @@
  * Time: 20:34
  */
 module.exports = {
-    auth: require('./auth'),
+    gate: require('./gate'),
     verifier: require('./verifier'),
     forwarder: require('./forwarder'),
     logger: require('./logger'),

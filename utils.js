@@ -1,3 +1,30 @@
+const {writeFileSync, readFileSync} = require('fs');
+
+/**
+ *
+ * @param path
+ * @param data
+ */
+const save = (path, data) => {
+    const string = JSON.stringify(data);
+
+    return writeFileSync(path, string);
+};
+
+/**
+ *
+ * @param path
+ * @returns {null|Buffer}
+ */
+const read = (path) => {
+    try {
+        const data = readFileSync(path, {encoding: 'utf-8'});
+        return JSON.parse(data);
+    } catch (e) {
+        return null;
+    }
+};
+
 /**
  *
  * @param fn
@@ -35,12 +62,12 @@ const CHARS = memoize(() => (
  * @param b
  * @returns {boolean}
  */
-        const starts = (a, b) => {
-        if (a === b) {
+const starts = (a, b) => {
+    if (a === b) {
         return true;
-        }
+    }
 
-        for (let i = 0; i < b.length; i++) {
+    for (let i = 0; i < b.length; i++) {
         if (a[i] !== b[i]) {
             return false;
         }
@@ -107,6 +134,86 @@ const info = console.info;
 const error = console.error;
 
 /**
+ *
+ */
+const cli = memoize((pool) => {
+
+    /**
+     *
+     * @param n
+     * @param s
+     * @returns {string}
+     */
+    const pad = (n, s) => (` ${s}${' '.repeat(n)}`).slice(0, n);
+
+    /**
+     *
+     */
+    const parse = () => {
+        const set = [...pool];
+        const result = {};
+        const arguments = process.argv;
+        arguments.splice(0, 2);
+
+        // handle arguments
+        for (let i = 0; i < arguments.length; i++) {
+            const cursor = arguments[i];
+            const entry = set.find(([flag]) => cursor === flag);
+
+            if (!entry) {
+                console.error('ERROR: invalid argument: ' + arguments[i]);
+                process.exit(1);
+            }
+
+            const [, name, , deflt, extract] = entry;
+
+            if (extract) {
+                i++;
+                result[name] = arguments[i];
+            } else {
+                result[name] = true;
+            }
+
+            set.splice(set.indexOf(entry), 1);
+        }
+
+        // handle left out defaults
+        for (const [, name, , deflt] of set) {
+            result[name] = deflt;
+        }
+
+        return result;
+    };
+
+    /**
+     *
+     */
+    const help = () => {
+        info('Usage: dap [options]\nOptions:');
+
+        for (const [flag, name, label, deflt] of pool) {
+            let text = '';
+
+            text += pad(8, flag);
+            text += label;
+
+            if (deflt) {
+                text += '\n';
+                text += pad(8, '');
+                text += `(default: ${deflt})`;
+            }
+
+            info(text);
+        }
+    };
+
+    return {
+        help,
+        parse,
+    };
+});
+
+/**
  * User: Oleg Kamlowski <oleg.kamlowski@thomann.de>
  * Date: 28.08.2019
  * Time: 20:15
@@ -118,4 +225,7 @@ module.exports = {
     info,
     error,
     memoize,
+    save,
+    read,
+    cli,
 };
