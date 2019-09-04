@@ -2,12 +2,11 @@ const {starts} = require('../utils');
 
 /**
  *
- * @param key
+ * @param endpoint
  * @returns {Function}
  */
-const factory = (key) => (req, res, next) => {
+const factory = (endpoint) => (req, res, next) => {
     const {url} = req;
-    const endpoint = `/${key}`;
 
     if (!starts(url, endpoint)) {
         return next('Forbidden');
