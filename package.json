@@ -1,10 +1,10 @@
 {
-  "name": "docker-api-proxy",
+  "name": "@sovrin/docker-api-proxy",
   "version": "1.1.0",
   "description": "safely proxy http requests to docker fd socket via nodejs",
   "main": "index.js",
   "bin": {
-    "dap": "./cli.js"
+    "dap": "./index.js"
   },
   "author": {
     "name": "Oleg Kamlowski",
