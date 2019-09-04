@@ -14,17 +14,18 @@ docker-api-proxy forwards all http requests by a single randomly generated endpo
 ## Usage
 
 ```bash
-$ WHITELIST=<clientIP> dap
+$ dap -h
 ```
 
-## Environment Variables
+## Options
+- `-i`: whitelist ips (delimited by ;)
+- `-e`: set custom endpoint
+- `-s`: set custom socket path (default: on windows: `//./pipe/docker_engine` | on unix: `/var/run/docker.sock`)
+- `-p`: set port (default: `3000`)
+- `-g`: generate new endpoint
+- `-h`: print out cli options
 
-- `PORT`: exposed port (default: 2357)
-- `SOCKET_PATH`: path to docker socket (default: on windows: `//./pipe/docker_engine` | on unix: `/var/run/docker.sock`)
-- `IP_WHITELIST`: list of whitelisted ips
-- `CUSTOM_ENDPOINT`: (optional, predefined endpoint; default: random 32char)
-
-> Note: If using CUSTOM_ENDPOINT its highly recommended to use a long and not so easy to guess endpoint. Obviously only URL safe characters are allowed. 
+> Note: If using a custom endpoint, its highly recommended to use a long and not so easy to guess endpoint. Obviously only URL safe characters are allowed. 
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

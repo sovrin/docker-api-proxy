@@ -1,80 +1,29 @@
-const {ENDPOINT_FILE} = require('./const');
-const {save} = require('./utils');
-const {read} = require('./utils');
-const {unique} = require('./utils');
-const {createServer: create} = require('http');
-const {verifier, forwarder, logger, gate} = require('./middlewares');
-const {middleware, info, error} = require('./utils');
+#!/usr/bin/env node
+
+const proxy = require('./lib/proxy');
+const cli = require('./lib/cli');
+const {SOCKET_PATH, PORT} = require('./lib/const');
+
+const INSTRUCTIONS = [
+    {flag: '-i', name: 'whitelist', label: 'ip whitelist', extract: true},
+    {flag: '-e', name: 'endpoint', label: 'set custom endpoint', extract: true},
+    {flag: '-s', name: 'socket_path', label: 'set custom socket path', default: SOCKET_PATH, extract: true},
+    {flag: '-p', name: 'port', label: 'set custom port', default: PORT, extract: true},
+    {flag: '-g', name: 'generate', label: 'generate new endpoint'},
+    {flag: '-h', name: 'help', label: 'print out cli options'},
+];
+
+const program = cli(INSTRUCTIONS);
+const args = program.parse();
+
+if (args.help) {
+    program.help();
+    process.exit(0);
+}
 
 /**
  * User: Oleg Kamlowski <oleg.kamlowski@thomann.de>
- * Date: 28.08.2019
- * Time: 22:42
+ * Date: 31.08.2019
+ * Time: 00:50
  */
-module.exports = ({endpoint, whitelist = [], generate, socket_path, port}) => {
-    endpoint = endpoint || read(ENDPOINT_FILE);
-
-    if (!endpoint || generate) {
-        endpoint = unique();
-    }
-
-    endpoint = (endpoint[0] === '/')
-        && endpoint
-        || `/${endpoint}`
-    ;
-
-    (read(ENDPOINT_FILE) !== endpoint)
-        && save(ENDPOINT_FILE, endpoint)
-    ;
-
-    if (typeof whitelist === 'string') {
-        whitelist = whitelist.split(';');
-    }
-
-    /**
-     *
-     * @param req
-     * @param res
-     * @returns {void|*}
-     */
-    const request = (req, res) => {
-        const handler = middleware(
-            logger(endpoint),
-            gate(whitelist),
-            verifier(endpoint),
-            forwarder(socket_path),
-        );
-
-        /**
-         *
-         * @param err
-         */
-        const error = (err) => {
-            res.writeHead(403, err);
-            res.end(err);
-        };
-
-        return handler(req, res, error);
-    };
-
-    /**
-     *
-     * @param err
-     * @returns {*|void}
-     */
-    const listen = (err) => {
-        if (err) return error(err);
-
-        if (!whitelist || !whitelist.length) {
-            return error('no hosts whitelisted! aborting')
-        }
-
-        info(`proxy stated and listening to ${port}`);
-        info(`hosts whitelisted: ${whitelist.join(', ')}`);
-        info(`registered endpoint: ${endpoint}`);
-    };
-
-    create(request)
-        .listen(port, listen)
-    ;
-};
+proxy(args);
