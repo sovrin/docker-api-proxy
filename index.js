@@ -18,7 +18,14 @@ module.exports = ({endpoint, whitelist = [], generate, socket_path, port}) => {
         endpoint = unique();
     }
 
-    (read(ENDPOINT_FILE) !== endpoint) && save(ENDPOINT_FILE, endpoint);
+    endpoint = (endpoint[0] === '/')
+        && endpoint
+        || `/${endpoint}`
+    ;
+
+    (read(ENDPOINT_FILE) !== endpoint)
+        && save(ENDPOINT_FILE, endpoint)
+    ;
 
     if (typeof whitelist === 'string') {
         whitelist = whitelist.split(';');
@@ -32,7 +39,7 @@ module.exports = ({endpoint, whitelist = [], generate, socket_path, port}) => {
      */
     const request = (req, res) => {
         const handler = middleware(
-            logger(),
+            logger(endpoint),
             gate(whitelist),
             verifier(endpoint),
             forwarder(socket_path),
@@ -64,10 +71,10 @@ module.exports = ({endpoint, whitelist = [], generate, socket_path, port}) => {
 
         info(`proxy stated and listening to ${port}`);
         info(`hosts whitelisted: ${whitelist.join(', ')}`);
-        info(`registered endpoint: /${endpoint}`);
+        info(`registered endpoint: ${endpoint}`);
     };
 
     create(request)
         .listen(port, listen)
     ;
-}
+};

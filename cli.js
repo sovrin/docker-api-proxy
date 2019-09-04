@@ -4,16 +4,16 @@ const proxy = require('./index');
 const {cli} = require('./utils');
 const {SOCKET_PATH, PORT} = require('./const');
 
-const ARGUMENTS = [
-    ['-i', 'whitelist',   'ip whitelist',           null ,       true ],
-    ['-e', 'endpoint',    'set custom endpoint',    null ,       true ],
-    ['-s', 'socket_path', 'set custom socket path', SOCKET_PATH, true ],
-    ['-p', 'port',        'set custom port',        PORT,        true ],
-    ['-g', 'generate',    'generate new endpoint',  null,        false],
-    ['-h', 'help',        'print out cli options',  null,        false],
+const INSTRUCTIONS = [
+    {flag: '-i', name: 'whitelist', label: 'ip whitelist', extract: true},
+    {flag: '-e', name: 'endpoint', label: 'set custom endpoint', extract: true},
+    {flag: '-s', name: 'socket_path', label: 'set custom socket path', default: SOCKET_PATH, extract: true},
+    {flag: '-p', name: 'port', label: 'set custom port', default: PORT, extract: true},
+    {flag: '-g', name: 'generate', label: 'generate new endpoint'},
+    {flag: '-h', name: 'help', label: 'print out cli options'},
 ];
 
-const program = cli(ARGUMENTS);
+const program = cli(INSTRUCTIONS);
 const args = program.parse();
 
 if (args.help) {

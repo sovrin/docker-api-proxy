@@ -150,7 +150,7 @@ const cli = memoize((pool) => {
      *
      */
     const parse = () => {
-        const set = [...pool];
+        const instructions = [...pool];
         const result = {};
         const arguments = process.argv;
         arguments.splice(0, 2);
@@ -158,14 +158,14 @@ const cli = memoize((pool) => {
         // handle arguments
         for (let i = 0; i < arguments.length; i++) {
             const cursor = arguments[i];
-            const entry = set.find(([flag]) => cursor === flag);
+            const entry = instructions.find(({flag}) => cursor === flag);
 
             if (!entry) {
                 console.error('ERROR: invalid argument: ' + arguments[i]);
                 process.exit(1);
             }
 
-            const [, name, , deflt, extract] = entry;
+            const {name, extract} = entry;
 
             if (extract) {
                 i++;
@@ -174,11 +174,11 @@ const cli = memoize((pool) => {
                 result[name] = true;
             }
 
-            set.splice(set.indexOf(entry), 1);
+            instructions.splice(instructions.indexOf(entry), 1);
         }
 
         // handle left out defaults
-        for (const [, name, , deflt] of set) {
+        for (const {name, default: deflt} of instructions) {
             result[name] = deflt;
         }
 
@@ -191,7 +191,7 @@ const cli = memoize((pool) => {
     const help = () => {
         info('Usage: dap [options]\nOptions:');
 
-        for (const [flag, name, label, deflt] of pool) {
+        for (const {flag, label, deflt} of pool) {
             let text = '';
 
             text += pad(8, flag);

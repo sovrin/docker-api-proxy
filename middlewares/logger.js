@@ -21,10 +21,14 @@ const getLogger = (status) => {
  *
  * @returns {function(*, *, *): *}
  */
-const factory = () => (req, res, next) => {
+const factory = (endpoint) => (req, res, next) => {
     const id = unique(8);
     const cache = {};
-    const {method, url} = req;
+    let {method, url} = req;
+
+    if (url.slice(0, endpoint.length) === endpoint) {
+        url = url.slice(-endpoint.length);
+    }
 
     cache[id] = `[${id}] ${method} ${url}`;
 
